@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 1.自增（数字变量上使用）
+    var num1 = 100
+    // num1++ // 后置写法
+    ++num1 // 前置写法
+    console.log(num1);
+
+    // 2.自减（数字变量上使用）
+    var num2 = 100
+    // num2-- // 后置写法
+    --num2 // 前置写法
+    console.log(num2);
+
+    // 3.前置和后置的区别
+    // num++: 先使用，在自身+1
+    // ++num:先自身+1， 再使用
+    var n1 = 100
+    var result1 = n1++ + 100
+    console.log(result1); // 200
+
+    var n2 = 100
+    var result2 = ++n2 + 100
+    console.log(result2); // 201
+
+    // 4.练习
+    var a = 10
+    // var b = a++ + a++
+    // console.log(a); // 12
+    // console.log(b); // 10 + 11 = 21
+
+    // var c = ++a + a++ // 11 + 11 = 22
+    // console.log(c);
+
+    // var d = ++a + ++a // 11 + 12 = 23
+    // console.log(d);
+
+    // var e = a++ + a-- // 10 + 11 = 21
+    // console.log(e);
+  </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 相等判断：https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Equality_comparisons_and_sameness
+    
+    // 1.抽象相等==判断，隐式转换：先进行转换再比较
+    var num1 = 123
+    var num2 = '123'
+
+    // 将string转成number，再进行比较
+    console.log(num1 == num2); // true
+
+    var flag1 = true
+    var flag2 = 'true'
+    // 将flag1转成number为1，flag2转成number为NaN，再进行比较
+    console.log(flag1 == flag2); // false
+
+    // 2.严格相等，全等===
+    console.log(num1 === num2); // false
+
+    // 3.!=比较：隐式转换
+    console.log(num1 != num2); // false
+
+    console.log(num1 !== num2); // true
+  </script>
+</body>
+</html>

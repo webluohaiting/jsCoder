@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 定义函数可以计算n个数字的和
+    function sum() {
+      console.log(arguments);
+      var total = 0
+      for (var i = 0; i < arguments.length; i++) {
+        total += arguments[i]
+      }
+      return total
+    }
+
+    var result = sum(20, 30, 40, 50, 100)
+    console.log(result);
+  </script>
+</body>
+</html>

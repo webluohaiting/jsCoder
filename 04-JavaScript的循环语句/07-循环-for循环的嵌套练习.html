@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    span {
+      display: inline-block;
+      width: 70px;
+      height: 35px;
+      line-height: 35px;
+      text-align: center;
+      border-top: 1px solid red;
+      border-right: 1px solid red;
+    }
+    div {
+      display: inline-block;
+      border-left: 1px solid red;
+      border-bottom: 1px solid red;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    // 1.屏幕上显示一个❤的矩形
+    for (var i = 0; i < 6; i++) {
+      for (var j = 0; j < 6; j++) {
+        document.write('❤ ')
+      }
+      document.write('<br>')
+    }
+
+    // 2.屏幕上显示一个❤的三角形
+    for (var i = 0; i < 6; i++) {
+      for (var j = 0; j <= i; j++) {
+        document.write('❤ ')
+      }
+      document.write('<br>')
+    }
+
+    // 3.九九乘法表
+    // for (var i = 1; i < 10; i++) {
+    //   for (var j = 1; j <= i; j++) {
+    //     document.write(j + '*' + i + '=' + i*j + '&nbsp;&nbsp;&nbsp;&nbsp;')
+    //   }
+    //   document.write('<br>')
+    // }
+    document.write('<div>')
+    for (var i = 1; i < 10; i++) {
+      for (var j = 1; j <= i; j++) {
+        document.write('<span>' + j + '*' + i + '=' + i*j + '</span>')
+      }
+      document.write('<br>')
+    }
+    document.write('</div>')
+  </script>
+</body>
+</html>

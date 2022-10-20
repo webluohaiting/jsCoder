@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 1.定义数组
+    var movies = ['海王', '上海堡垒', '唐人街探案', '少年派的奇幻漂流']
+    console.log(movies);
+
+    // 2.获取数组的长度属性：length
+    console.log(movies.length);
+
+    // 3.根据索引值获取数据
+    // 如果传入不存在的索引值，返回undefined(其他语言会报错下标溢出)
+    var m1 = movies[1]
+    var m2 = movies[10]
+    var m3 = movies[-1]
+    console.log(m1, m2, m3);
+  </script>
+</body>
+</html>

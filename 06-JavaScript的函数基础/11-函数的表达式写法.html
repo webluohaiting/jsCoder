@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 1.函数的声明写法
+    function test() {
+      console.log('test被调用');
+    }
+    test()
+
+    // 2.函数表达式
+    // 2.1命名函数表达式
+    var foo1 = function func() {
+      console.log('foo1被调用');
+    }
+    foo1()
+
+    // 2.2匿名函数表达式
+    var foo2 = function() {
+      console.log('foo2被调用');
+    }
+    foo2()
+
+    // 3.函数都是有属性的：name
+    console.log('test的name:', test.name);
+  </script>
+</body>
+</html>

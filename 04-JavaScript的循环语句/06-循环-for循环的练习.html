@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 1.打印0-9的数字
+    // for (var i = 0; i < 10; i++) {
+    //   console.log(i);
+    // }
+
+    // 2.打印1-10的数字
+    // for (var i = 1; i <= 10; i++) {
+    //   console.log(i);
+    // }
+
+    // 3.打印10-1的数字
+    for (var i = 10; i > 0; i--) {
+      console.log(i);
+    }
+
+    // 4.计算0-99的和
+    var sum = 0
+    for (var i = 0; i < 100; i++) {
+      sum += i
+    }
+    console.log(sum);
+
+    // 5.计算0-99的奇数和和偶数和
+    var oddTotal = 0
+    var evenTotal = 0
+    for (var i = 0; i < 100; i++) {
+      if (i % 2) {
+        oddTotal += i
+      } else {
+        evenTotal += i
+      }
+    }
+    console.log('0-99奇数和：', oddTotal);
+    console.log('0-99偶数和：', evenTotal);
+  </script>
+</body>
+</html>

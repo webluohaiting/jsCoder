@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    var names = ['haha', 'hehe', 'baba', 'mama', 'xixi']
+
+    // 1.反向遍历
+    for (var i = names.length - 1; i >= 0; i--) {
+      console.log(names[i]);
+    }
+
+    // 2.用-拼接数组元素
+    var result = ''
+    for (var i = 0; i < names.length; i++) {
+      result += names[i]
+      i !== names.length - 1 && (result += '-')
+    }
+    console.log(result);
+
+    // 3.求数组所有元素的和及平均数
+    var nums = [10, 88, 99, 2, 1]
+    var sum = 0
+    for (var i = 0; i < nums.length; i++) {
+      sum += nums[i]
+    }
+    var avarage = sum/nums.length
+    console.log(sum, avarage);
+
+    // 4.找出数组中的最大值
+    // 定义一个变量max，变量保存第一个数字
+    // 比较遍历的数字和max
+    // 如果遍历的数字大于max,将遍历的数字赋值给max
+    var numbers = [10, 88, 99, 2, 1]
+    var max = numbers[0]
+    for (var i = 1; i < numbers.length; i++) {
+      if (numbers[i] > max) {
+        max = numbers[i]
+      }
+    }
+    console.log(max);
+
+    // 5.反转一个数组中内容
+    // 将0与5交换，1与4交换，2与3交换
+    var numbers = [10, 88, 99, 2, 1, 5]
+    for (var i = 0; i < numbers.length/2; i++) {
+      var temp = numbers[i]
+      numbers[i] = numbers[numbers.length - 1 - i]
+      numbers[numbers.length - 1 - i] = temp
+    }
+    console.log(numbers);
+
+    // 6.冒泡排序
+    // 两两对比，大的放后面
+    // 通过第一轮比较，最后一个为最大值
+    // 除去最后一位，前面的继续比较，继续得出最后一个最大值
+    // ...循环直至比较到最前面两位
+    var nums = [10, 88, 99, 2, 1, 5]
+    // for (var i = 0; i < nums.length - 1; i++) {
+    //   for (var j = 0; j < nums.length - 1 - i; j++) {
+    //     if (nums[j] > nums[j+1]) {
+    //       var temp = nums[j]
+    //       nums[j] = nums[j+1]
+    //       nums[j+1] = temp
+    //     }
+    //   }
+    // }
+    for (var i = nums.length - 1; i > 0; i--) {
+      for (var j = 0; j < i; j++) {
+        if (nums[j] > nums[j+1]) {
+          var temp = nums[j]
+          nums[j] = nums[j+1]
+          nums[j+1] = temp
+        }
+      }
+    }
+    console.log(nums);
+  </script>
+</body>
+</html>

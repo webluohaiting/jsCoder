@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+  //  1.小明输入节日
+  var direction = prompt('请输入方向：')
+
+  // 2.判断不同节日，执行不同代码
+  // 通过break结束分支，防止case穿透，直接执行下面的代码
+  switch (direction) {
+    case '上': 
+      console.log('机器人向上走');
+      break; // 防止case穿透
+    case '下':
+      console.log('机器人向下走');
+      break;
+    case '左':
+      console.log('机器人向左走');
+      break;
+    case '右':
+      console.log('机器人向右走');
+      break;
+    default: 
+      console.log('原地不动');
+      break;
+  }
+  </script>
+</body>
+</html>

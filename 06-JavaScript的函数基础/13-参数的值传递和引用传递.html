@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 1.值传递
+    function test(name) {
+      console.log(name);
+      name = 'heihei'
+      console.log(name);
+    }
+
+    var temp = 'haha'
+    test(temp)
+    console.log(temp); // haha
+
+    // 2.引用传递
+    function test1(arr) {
+      arr[0] = 'abc'
+    }
+
+    var temp1 = [1, 2, 3, 4]
+    test1(temp1)
+    console.log(temp1); // ['abc', 2, 3, 4]
+  </script>
+</body>
+</html>

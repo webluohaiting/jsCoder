@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 1.反转数组
+    function reverseArray(arr) {
+      for (var i = 0; i < arr.length / 2; i++) {
+        var temp = arr[i]
+        arr[i] = arr[arr.length - 1 - i]
+        arr[arr.length - 1 - i] = temp
+      }
+      // return arr // 不需要返回，引用传递的形参arr改变，实参nums1也会改变
+    }
+
+    var nums1 = [12, 34, 42, 16, 48, 96]
+    // nums1 = reverseArray(nums1)
+    reverseArray(nums1)
+    console.log(nums1);
+
+    // 2.选择排序
+    // 核心：取固定一位跟后面对比
+    // 把第一位当成最小的，拿第一位跟接下来每一位比较，把小的放到第一位
+    // 把第二位当成最小的，拿第二位跟接下来每一位比较，把小的放到第二位
+    // ...
+    // 或者把最后一位当成最大的，跟前面所有比较，把大的放到最后一位
+    function sortArray(arr) {
+      for (var i = 0; i < arr.length - 1; i++) {
+        for (var j = i + 1; j < arr.length; j++) {
+          if (arr[i] > arr[j]) {
+            var temp = arr[i]
+            arr[i] = arr[j]
+            arr[j] = temp
+          }
+        }
+      }
+    }
+    var nums2 = [12, 34, 42, 16, 48, 96]
+    sortArray(nums2)
+    console.log(nums2);
+    
+  </script>
+</body>
+</html>

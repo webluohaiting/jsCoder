@@ -1,0 +1,45 @@
+// 案例一
+// foo函数是否是一个纯函数
+// 1.相同的输入一定产生相同的输出
+// 2.在执行的过程中不会产生任何的副作用
+function foo(num1, num2) {
+  return num1 * 2 + num2 + num2
+}
+
+// 案例二
+// bar不是一个纯函数，因为它修改了外界的变量
+var name = 'abc'
+function bar() {
+  console.log('bar其他的代码执行');
+  name = 'cba'
+}
+bar()
+console.log(name);
+
+// 案例三
+// baz也不是一个纯函数，因为修改了传入的参数
+function baz(info) {
+  info.age = 100
+}
+
+var obj = { name: 'haha', age: 20 }
+baz(obj)
+console.log(obj);
+
+// 案例四
+// test是一个纯函数
+// 传入同一个对象，每次结果都是一样的，而且不会影响外部的变量
+function test(info) {
+  return {
+    ...info,
+    age: 100
+  }
+}
+test(obj)
+test(obj)
+test(obj)
+
+// React的函数组件（类组件）
+function HelloWorld(props) {
+  // props.info = {} // 不允许重新修改
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 函数的返回值
+    function sum(num1, num2) {
+      var result = num1 + num2
+      return result
+    }
+    
+    // 调用函数
+    var total = sum(20, 30)
+    console.log(total);
+
+    // 2.返回值的注意事项
+    // 2.1 一旦函数中执行了return操作，那么函数就会立即停止，后续的代码都不再执行
+    // 2.2 一个函数如果没有返回值，默认返回一个undefined
+    // 2.3 如果一个函数写了return，return后面没有内容，相当于return undefined
+    function test() {
+      console.log(1);
+      console.log(2);
+      // return 10
+      console.log(3);
+      console.log(4);
+      // return
+    }
+    var result = test()
+    console.log(result);
+  </script>
+</body>
+</html>

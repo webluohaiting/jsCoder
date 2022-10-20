@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+  //  1.小明输入节日
+  var holidayName = prompt('请输入今天的节日：')
+
+  // 2.判断不同节日，执行不同代码
+  // 通过break结束分支，防止case穿透，直接执行下面的代码
+  switch (holidayName) {
+    case '情人节': 
+      console.log('买玫瑰');
+      console.log('看电影');
+      break; // 防止case穿透
+    case '平安夜':
+      console.log('买苹果');
+      console.log('吃大餐');
+      break;
+    case '生日会':
+      console.log('买蛋糕');
+      console.log('开party');
+      break;
+    default: 
+      console.log('上班');
+      console.log('工作');
+      console.log('喝西北风');
+      break;
+  }
+  </script>
+</body>
+</html>

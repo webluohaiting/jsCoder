@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 默认情况下，所有循环都会按照正常的顺序，依次执行
+    // 需求1: 5这个数字不打印
+    // for (var i = 0; i < 10; i++) {
+    //   if (i === 5 || i === 8) {
+    //     continue
+    //   }
+    //   console.log(i);
+    // }
+
+    // 需求2: 5这个数字,直接整个循环跳出
+    // break:直接跳出循环，后续所有的循环体都不再执行
+    for (var i = 0; i < 10; i++) {
+      if (i === 5) {
+        break
+      }
+      console.log(i);
+    }
+  </script>
+</body>
+</html>

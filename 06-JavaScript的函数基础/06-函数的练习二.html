@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 4.传入一个n,计算1-n数字的和
+    function calcNumSum(n) {
+      var sum = 0
+      for (var i = 1; i <= n; i++) {
+        sum += i
+      }
+      return sum
+    }
+    var result1 = calcNumSum(5)
+    var result2 = calcNumSum(100)
+    console.log(result1);
+    console.log(result2);
+
+    // 5.传入一个数组，对数组进行反转
+    function reverseArray(arr) {
+      for (var i = 0; i < arr.length / 2; i++) {
+        var temp = arr[i]
+        arr[i] = arr[arr.length - 1 - i]
+        arr[arr.length - 1 - i] = temp
+      }
+      return arr
+    }
+    var nums1 = [12, 34, 42, 16, 48, 96]
+    nums1 = reverseArray(nums1)
+    console.log(nums1);
+    var nums2 = [56, 34, 78, 16, 112, 96]
+    nums2 = reverseArray(nums2)
+    console.log(nums2);
+  </script>
+</body>
+</html>

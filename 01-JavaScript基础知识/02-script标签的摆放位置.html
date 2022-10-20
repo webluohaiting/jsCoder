@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script>
+    // 一般DOM操作不会写在这个位置，此时DOM还没加载
+    alert('hello world')
+  </script>
+</head>
+<body>
+  <ul>
+    <li class="item">123</li>
+    <li>123</li>
+    <li>123</li>
+    <li>123</li>
+    <li>123</li>
+    <li>123</li>
+    <li>123</li>
+    <li>123</li>
+    <li>123</li>
+    <li>123</li>
+  </ul>
+  <script>
+    alert('hello world')
+
+    // 严格区分大小写
+    // ALERT('hello js')
+
+    // 一般DOM操作都写在这个位置
+    document.querySelector('.item').onclick = function() {
+      alert('我是哈哈')
+    }
+  </script>
+</body>
+</html>

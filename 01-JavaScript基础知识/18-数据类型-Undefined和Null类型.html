@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 1.undefined（未定义）:当一个变量进行了声明，但是没有赋值，这个时候他的值就是undefined
+    var flag
+    console.log(flag) // 值undefined
+    console.log(typeof flag) // 类型undefined
+
+    // 2.null（空）:
+    var info = { name: 'haha', age: 10 }
+    info = null // 进行垃圾回收
+
+    console.log(undefined == null)
+  </script>
+</body>
+</html>

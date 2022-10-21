@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    div {
+      display: flex;
+      flex-wrap: wrap;
+      width: 360px;
+    }
+    input {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  <button id="setBtn" onclick="setTable()">设置原始值</button>
+  <button id="resetBtn" onclick="resetTable()">重新设置原始值</button>
+  <button id="originBtn" onclick="clearTable()">清空</button><br><br>
+  <input type="text" id="text" style="width: 160px;height: 30px;" placeholder="请输入导出提示语">
+  <button id="originBtn" onclick="exportTable()">导出</button><br>
+  <input type="text" id="arr" style="width: 160px;height: 30px;" placeholder="请输入导入数组">
+  <button id="originBtn" onclick="importTable()">导入</button><br><br>
+  <input type="number" id="num" style="width: 80px;height: 30px;">
+  <button id="originBtn" onclick="searchNum()">查找数字</button><br><br>
+  索引：<span id="index"></span><br>
+  行: <span id="row"></span><br>
+  列: <span id="column"></span><br>
+  九宫格: <span id="grid"></span><br>
+  <div id="tips" style="height: 25px;color: red;"></div>
+  <script>
+    function createTable() {
+      const wrap = document.createElement('div')
+      wrap.setAttribute('id', 'wrap')
+      for (let i = 0; i < 81; i++) {
+        const inputBox = document.createElement('input')
+        inputBox.setAttribute('id', `input${i}`)
+        i % 3 === 0 && (inputBox.style.borderLeftColor = 'black')
+        i % 3 === 2 && (inputBox.style.borderRightColor = 'black')
+        Math.floor(i / 9) === 3 && (inputBox.style.borderTopColor = 'black')
+        Math.floor(i / 9) === 2 && (inputBox.style.borderBottomColor = 'black')
+        Math.floor(i / 9) === 6 && (inputBox.style.borderTopColor = 'black')
+        Math.floor(i / 9) === 5 && (inputBox.style.borderBottomColor = 'black')
+        wrap.appendChild(inputBox)
+      }
+      document.body.appendChild(wrap)
+    }
+
+    function getInputBox() {
+      return document.getElementById('wrap').getElementsByTagName('input')
+    }
+
+    function setTable() {
+      const inputBox = getInputBox()
+      for (let i = 0; i < inputBox.length; i++) {
+        if (inputBox[i].value) {
+          inputBox[i].setAttribute('disabled', true)
+          inputBox[i].style.color = 'red'
+          inputBox[i].style.fontWeight = '600'
+        }
+      }
+      document.getElementById('setBtn').style.display = 'none'
+      document.getElementById('resetBtn').style.display = ''
+    }
+
+    function resetTable() {
+      const inputBox = getInputBox()
+      for (let i = 0; i < inputBox.length; i++) {
+        inputBox[i].removeAttribute('disabled')
+        inputBox[i].style.color = ''
+        inputBox[i].style.fontWeight = ''
+      }
+      document.getElementById('setBtn').style.display = ''
+      document.getElementById('resetBtn').style.display = 'none'
+    }
+
+    function clearTable() {
+      const inputBox = getInputBox()
+      for (let i = 0; i < inputBox.length; i++) {
+        if (!inputBox[i].getAttributeNode('disabled')) {
+          inputBox[i].value = ''
+          inputBox[i].style.color = ''
+          inputBox[i].style.fontWeight = ''
+          inputBox[i].style.background = ''
+        } else {
+          inputBox[i].style.color = 'red'
+          inputBox[i].style.fontWeight = '600'
+        }
+      }
+    }
+
+    function searchNum() {
+      const num = document.getElementById('num').value
+      const inputBox = getInputBox()
+      for (let i = 0; i < inputBox.length; i++) {
+        if (inputBox[i].value === num) {
+          inputBox[i].style.color = 'skyblue'
+          inputBox[i].style.fontWeight = '600'
+        } else {
+          if (!inputBox[i].getAttributeNode('disabled')) {
+            inputBox[i].style.color = 'inherit'
+            inputBox[i].style.fontWeight = '400'
+          } else {
+            inputBox[i].style.color = 'red'
+            inputBox[i].style.fontWeight = '600'
+          }
+          
+        }
+      }
+    }
+
+    function addInputListener() {
+      const inputBox = getInputBox()
+      for (let i = 0; i < inputBox.length; i++) {
+        inputBox[i].addEventListener('focus', function(e) {
+          const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+          document.getElementById('index').innerText = i
+          document.getElementById('row').innerText = arr.filter(item => !getRemainRowNum(i).includes(item))
+          document.getElementById('column').innerText = arr.filter(item => !getRemainColumnNum(i).includes(item))
+          document.getElementById('grid').innerText = arr.filter(item => !getRemainGridNum(i).includes(item))
+        })
+        inputBox[i].addEventListener('blur', function(e) {
+          if (!e.target.value) {
+            inputBox[i].style.background = 'inherit'
+            document.getElementById('tips').textContent = ''
+          } else {
+            document.getElementById('tips').textContent = checkGridNum(i, e.target.value)
+            || checkRowNum(i, e.target.value)
+            || checkColumnNum(i, e.target.value)
+            || ''
+          }
+        })
+      }
+    }
+
+    function checkRowNum(id, val) {
+      const startNum = Math.floor(id / 9) * 9
+      const inputBox = getInputBox()
+      for (let i = startNum; i < startNum + 9; i++) {
+        if (id === i) continue // 同一格跳过
+        if (inputBox[i].value === val) {
+          inputBox[id].style.background = 'pink'
+          return '同一行已出现相同数字'
+        }
+        inputBox[id].style.background = 'inherit'
+      }
+    }
+
+    function checkColumnNum(id, val) {
+      const startNum = id % 9
+      const inputBox = getInputBox()
+      for (let i = startNum; i < 81; i += 9) {
+        if (id === i) continue // 同一格跳过
+        if (inputBox[i].value === val) {
+          inputBox[id].style.background = 'pink'
+          return '同一列已出现相同数字'
+        }
+        inputBox[id].style.background = ''
+      }
+    }
+
+    function checkGridNum(id, val) {
+      const inputBox = getInputBox()
+      const y = Math.floor(id / 9) % 3
+      const x = id % 9 % 3
+      const indexArr = [
+        id-9*y-x, id-9*y-(x-1), id-9*y-(x-2),
+        id-9*(y-1)-x, id-9*(y-1)-(x-1), id-9*(y-1)-(x-2),
+        id-9*(y-2)-x, id-9*(y-2)-(x-1), id-9*(y-2)-(x-2)
+      ]
+      for (let i = 0; i < indexArr.length; i++) {
+        if (id === indexArr[i]) continue // 同一格跳过
+        if (inputBox[indexArr[i]].value === val) {
+          inputBox[id].style.background = 'pink'
+          return '九宫格已出现相同数字'
+        }
+        inputBox[id].style.background = 'inherit'
+      }
+    }
+
+    function getRemainRowNum(id) {
+      let str = ''
+      const startNum = Math.floor(id / 9) * 9
+      const inputBox = getInputBox()
+      for (let i = startNum; i < startNum + 9; i++) {
+        str = str.concat(inputBox[i].value)
+      }
+      return str
+    }
+
+    function getRemainColumnNum(id) {
+      let str = ''
+      const startNum = id % 9
+      const inputBox = getInputBox()
+      for (let i = startNum; i < 81; i += 9) {
+        str = str.concat(inputBox[i].value)
+      }
+      // console.log(str);
+      return str
+    }
+
+    function getRemainGridNum(id) {
+      let str = ''
+      const inputBox = getInputBox()
+      const y = Math.floor(id / 9) % 3
+      const x = id % 9 % 3
+      const indexArr = [
+        id-9*y-x, id-9*y-(x-1), id-9*y-(x-2),
+        id-9*(y-1)-x, id-9*(y-1)-(x-1), id-9*(y-1)-(x-2),
+        id-9*(y-2)-x, id-9*(y-2)-(x-1), id-9*(y-2)-(x-2)
+      ]
+      for (let i = 0; i < indexArr.length; i++) {
+        str = str.concat(inputBox[indexArr[i]].value)
+      }
+      return str
+    }
+
+    function importTable() {
+      const arr = JSON.parse(document.getElementById('arr').value)
+      const inputBox = getInputBox()
+      for (let i = 0; i < inputBox.length; i++) {
+        inputBox[i].value = arr[i].value
+        inputBox[i].style.background = arr[i].background
+        inputBox[i].style.fontWeight = arr[i].fontWeight
+        inputBox[i].style.color = arr[i].color
+        if (arr[i].disabled) {
+          inputBox[i].setAttribute('disabled', true)
+        } else {
+          inputBox[i].removeAttribute('disabled')
+        }
+      }
+      document.getElementById('arr').value = ''
+    }
+
+    function exportTable() {
+      const inputBox = getInputBox()
+      const arr = []
+      for (let i = 0; i < inputBox.length; i++) {
+        const obj = {}
+        obj.value = inputBox[i].value
+        obj.background = inputBox[i].style.background
+        obj.fontWeight = inputBox[i].style.fontWeight
+        obj.color = inputBox[i].style.color
+        obj.disabled = inputBox[i].getAttribute('disabled')
+        arr.push(obj)
+      }
+      console.log(document.getElementById('text').value, arr);
+    }
+
+
+    document.getElementById('resetBtn').style.display = 'none'
+    createTable()
+    addInputListener()
+  </script>
+</body>
+</html>

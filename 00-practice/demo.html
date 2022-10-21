@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    var fs = new FinalizationRegistry(val => {
+      console.log(val, '对象被销毁了')
+    })
+    var obj = {a: 6}
+    function foo(obj) {
+      fs.register(obj, 'obj1')
+      console.log(obj.a)
+      var obj = {
+        a: 3
+      }
+      fs.register(obj, 'obj2')
+      console.log(obj.a)
+    }
+    foo(obj)
+    console.log(obj)
+    // function foo(a) {
+    //   console.log(a);
+    //   var a = 2
+    //   console.log(a);
+    // }
+    // foo(1)
+    obj = null
+  </script>
+</body>
+</html>

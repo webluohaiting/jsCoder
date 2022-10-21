@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .wrap {
+      display: flex;
+      width: 450px;
+    }
+    .box {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      /* width: 20px;
+      height: 20px;
+      line-height: 20px; */
+      text-align: center;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    .content3 .box, .content6 .box {
+      border-bottom: 1px solid blue;
+    }
+    .r {
+      color: red;
+    }
+    .y {
+      color: yellow;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap content1">
+    1<span class="box">1</span>
+    <span class="box r">9</span>
+    <span class="box r">5</span>&nbsp;&nbsp;
+    <span class="box r">6</span>
+    <span class="box">8</span>
+    <span class="box r">4</span>&nbsp;&nbsp;
+    <span class="box">3</span>
+    <span class="box r">2</span>
+    <span class="box r">7</span>
+  </div>
+  <div class="wrap content2">
+    2<span class="box r">8</span>
+    <span class="box">3</span>
+    <span class="box">6</span>&nbsp;&nbsp;
+    <span class="box">7</span>
+    <span class="box">5</span>
+    <span class="box r">2</span>&nbsp;&nbsp;
+    <span class="box r">1</span>
+    <span class="box r">9</span>
+    <span class="box r">4</span>
+  </div>
+  <div class="wrap content3">
+    3<span class="box r">4</span>
+    <span class="box">7</span>
+    <span class="box r">2</span>&nbsp;&nbsp;
+    <span class="box r">1</span>
+    <span class="box r">3</span>
+    <span class="box">9</span>&nbsp;&nbsp;
+    <span class="box r">5</span>
+    <span class="box r">6</span>
+    <span class="box">8</span>
+  </div>
+  <div class="wrap 4">
+    4<span class="box">6</span>
+    <span class="box r">8</span>
+    <span class="box r">9</span>&nbsp;&nbsp;
+    <span class="box r">5</span>
+    <span class="box">2</span>
+    <span class="box r">3</span>&nbsp;&nbsp;
+    <span class="box r">7</span>
+    <span class="box r">4</span>
+    <span class="box">1</span>
+  </div>
+  <div class="wrap content5">
+    5<span class="box r">5</span>
+    <span class="box r">1</span>
+    <span class="box">3</span>&nbsp;&nbsp;
+    <span class="box r">4</span>
+    <span class="box">7</span>
+    <span class="box">6</span>&nbsp;&nbsp;
+    <span class="box r">2</span>
+    <span class="box r">8</span>
+    <span class="box">9</span>
+  </div>
+  <div class="wrap content6">
+    6<span class="box">2</span>
+    <span class="box r">4</span>
+    <span class="box">7</span>&nbsp;&nbsp;
+    <span class="box r">9</span>
+    <span class="box r">1</span>
+    <span class="box r">8</span>&nbsp;&nbsp;
+    <span class="box">6</span>
+    <span class="box r">5</span>
+    <span class="box r">3</span>
+  </div>
+  <div class="wrap content7">
+    7<span class="box r">9</span>
+    <span class="box r">5</span>
+    <span class="box r">8</span>&nbsp;&nbsp;
+    <span class="box r">3</span>
+    <span class="box r">6</span>
+    <span class="box">7</span>&nbsp;&nbsp;
+    <span class="box">4</span>
+    <span class="box r">1</span>
+    <span class="box">2</span>
+  </div>
+  <div class="wrap content8">
+    8<span class="box">3</span>
+    <span class="box">2</span>
+    <span class="box">1</span>&nbsp;&nbsp;
+    <span class="box">8</span>
+    <span class="box">4</span>
+    <span class="box">5</span>&nbsp;&nbsp;
+    <span class="box">9</span>
+    <span class="box r">7</span>
+    <span class="box r">6</span>
+  </div>
+  <div class="wrap content9">
+    9<span class="box r">7</span>
+    <span class="box r">6</span>
+    <span class="box r">4</span>&nbsp;&nbsp;
+    <span class="box">2</span>
+    <span class="box">9</span>
+    <span class="box r">1</span>&nbsp;&nbsp;
+    <span class="box r">8</span>
+    <span class="box r">3</span>
+    <span class="box">5</span>
+  </div>
+  <script>
+    const num = '8'
+    const boxClass = document.getElementsByClassName('box')
+    for (let i = 0; i < boxClass.length; i++) {
+      if (boxClass[i].textContent === num) {
+        boxClass[i].style.color = 'skyblue'
+        boxClass[i].style.fontWeight = '900'
+      }
+    }
+  </script>
+</body>
+</html>

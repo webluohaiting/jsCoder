@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    img {
+      position: fixed;
+      top: -20px;
+      /* left: 0px; */
+      width: 20px;
+      height: 20px;
+      transition: top 20s linear, left 20s linear;
+    }
+  </style>
+</head>
+<body>
+  <!-- <img id="ice" src="./雪花.png"> -->
+  <script>
+    var i = 0
+    var innerWidth = window.innerWidth
+    var innerHeight = window.innerHeight
+    var timer = setInterval(() => {
+      var attributes = {
+        id: 'ice' + i,
+        src: './雪花.png'
+      }
+      var img = addElement(document.body, 'img', attributes)
+      var element = document.getElementById('ice' + i)
+      setStyle(element, 'left', (Math.random() * innerWidth) + 'px');
+      (element => setTimeout(() => {
+        setStyle(element, 'top', innerHeight + 'px')
+        setStyle(element, 'left', (Math.random() * innerWidth) + 'px')
+      }, 100))(element)
+      i++
+    }, 1000)
+
+    // 添加节点
+    function addElement(fatherElement, elementKey, attributes) {
+      var element = document.createElement(elementKey)
+      addAttribute(element, attributes)
+      fatherElement.appendChild(element)
+    }
+
+    // 为节点添加属性
+    function addAttribute(element, attributes) {
+      for (var key in attributes) {
+        var node = document.createAttribute(key)
+        node.value = attributes[key]
+        element.setAttributeNode(node)
+      }
+    }
+
+    // 为节点设置样式
+    function setStyle(element, attribute, value) {
+      element.style[attribute] = value
+    }
+  </script>
+</body>
+</html>

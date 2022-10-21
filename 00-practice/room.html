@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .room {
+      display: inline-block;
+      position: relative;
+      width: 300px;
+      height: 320px;
+      border: 1px solid rgb(248, 191, 3);
+    }
+    .column {
+      width: 30px;
+      height: 10px;
+      background: #c8c8c8;
+    }
+    .door {
+      width: 90px;
+      height: 6px;
+      background: #333;
+    }
+    .window-large {
+      width: 6px;
+      height: 220px;
+      background: #333;
+    }
+    .window-small {
+      width: 6px;
+      height: 115px;
+      background: #333;
+    }
+    .bed {
+      width: 120px;
+      height: 210px;
+      border: 1px solid #ccc;
+    }
+    /* .bed {
+      width: 210px;
+      height: 120px;
+      border: 1px solid #ccc;
+    } */
+    .cupboard {
+      width: 30px;
+      height: 30px;
+      background: rgb(238, 175, 3);
+    }
+    .pillow {
+      width: 45px;
+      height: 25px;
+      margin-top: 5px;
+      border-radius: 5px;
+      background: rgb(243, 224, 174);
+    }
+
+
+    .room1 .column {
+      position: absolute;
+      top: 0;
+      /* left: 160px; */
+      width: 20px;
+    }
+    .room1 .door {
+      position: absolute;
+      bottom: -3px;
+      right: 15px;
+    }
+    .room1 .window-small {
+      position: absolute;
+      bottom: 45px;
+      left: -3px;
+    }
+
+
+    .room2 .column {
+      position: absolute;
+      top: 0;
+      right: 120px;
+    }
+    .room2 .door {
+      position: absolute;
+      bottom: -3px;
+      left: 15px;
+    }
+    .room2 .window-large {
+      position: absolute;
+      top: 50%;
+      right: -3px;
+      transform: translateY(-50%);
+    }
+    .room2 .bed {
+      /* display: flex;
+      justify-content: space-around;
+      position: absolute;
+      right: 0;
+      top: 0; */
+      /* position: absolute;
+      top: 10px;
+      left: 0; */
+      position: absolute;
+      right: 40px;
+      bottom: 0;
+      /* position: absolute;
+      top: 10px;
+      left: 105px; */
+    }
+    .room2 .cupboard {
+      position: absolute;
+      top: 10px;
+      right: 120px;
+    }
+    .room2 .pillow {
+      
+    }
+    
+
+  </style>
+</head>
+<body>
+  <div class="room room1">
+    <div class="column"></div>
+    <div class="door"></div>
+    <div class="window-small"></div>
+    <!-- <div class="bed"></div> -->
+  </div>
+  <div class="room room2">
+    <div class="column"></div>
+    <div class="door"></div>
+    <div class="window-large"></div>
+    <!-- <div class="bed"> -->
+      <!-- <div class="pillow"></div>
+      <div class="pillow"></div> -->
+    <!-- </div> -->
+    <!-- <div class="cupboard"></div> -->
+  </div>
+  <div>长：3m</div>
+  <div>宽：3.3m</div>
+</body>
+</html>

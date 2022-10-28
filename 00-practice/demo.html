@@ -7,28 +7,47 @@
 </head>
 <body>
   <script>
-    var fs = new FinalizationRegistry(val => {
-      console.log(val, '对象被销毁了')
-    })
-    var obj = {a: 6}
-    function foo(obj) {
-      fs.register(obj, 'obj1')
-      console.log(obj.a)
-      var obj = {
-        a: 3
-      }
-      fs.register(obj, 'obj2')
-      console.log(obj.a)
-    }
-    foo(obj)
-    console.log(obj)
-    // function foo(a) {
-    //   console.log(a);
-    //   var a = 2
-    //   console.log(a);
+    // var fs = new FinalizationRegistry(val => {
+    //   console.log(val, '对象被销毁了')
+    // })
+    // var obj = {a: 6}
+    // function foo(obj) {
+    //   fs.register(obj, 'obj1')
+    //   console.log(obj.a)
+    //   var obj = {
+    //     a: 3
+    //   }
+    //   fs.register(obj, 'obj2')
+    //   console.log(obj.a)
     // }
-    // foo(1)
-    obj = null
+    // foo(obj)
+    // console.log(obj)
+    // // function foo(a) {
+    // //   console.log(a);
+    // //   var a = 2
+    // //   console.log(a);
+    // // }
+    // // foo(1)
+    // obj = null
+
+    Promise.resolve().then(() => {
+      console.log(0);
+      return Promise.resolve(4);
+    }).then((res) => {
+      console.log(res)
+    })
+
+    Promise.resolve().then(() => {
+      console.log(1);
+    }).then(() => {
+      console.log(2);
+    }).then(() => {
+      console.log(3);
+    }).then(() => {
+      console.log(5);
+    }).then(() =>{
+      console.log(6);
+    })
   </script>
 </body>
 </html>

@@ -7,7 +7,7 @@ class Person {
     this._address = '广州市'
   }
 
-  // 2.类定义的方法：所有实例对象是共享的(即定义在Person.prototype)
+  // 2.类定义的方法(对象方法)：所有实例对象是共享的(即定义在Person.prototype)
   eating() {
     console.log(this.name + ' eating');
   }

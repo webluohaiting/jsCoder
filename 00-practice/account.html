@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    @media screen and (max-width: 1000px) {
+      table {
+        width: 100%;
+      }
+      textarea {
+        font-size: 14px;
+      }
+    }
+    @media screen and (min-width: 1000px) {
+      table {
+        width: 60%;
+      }
+      textarea {
+        font-size: 16px;
+      }
+    }
+    
+    table, th, td {
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    th, td {
+      padding: 2px;
+    }
+    input, textarea {
+      border: none;
+      outline: none;
+    }
+    textarea {
+      width: 100%;
+    }
+
+    .accountTable tr td:nth-child(1),
+    .accountTable tr td:nth-child(3) {
+      width: 16%;
+      font-size: 10px;
+      text-align: center;
+    }
+
+    .accountTable tr td:nth-child(2) {
+      width: 68%; 
+    }
+
+    .resultTable tr {
+      height: 40px;
+      line-height: 30px;
+    }
+
+    .resultTable tr td:nth-child(3) {
+      width: 30%;
+    }
+    .resultTable input {
+      width: 100%;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <table class="accountTable">
+    <thead>
+      <tr>
+        <th>参与人</th>
+        <th>金额列表</th>
+        <th>金额结算</th>
+      </tr>
+    </thead>
+    <tbody id="accountBody"></tbody>
+  </table>
+  <button onclick="addRow()">添加行</button>
+  <button onclick="deleteRow()">删除行</button>
+  <br><br>
+  <table class="resultTable">
+    <thead>
+      <!-- <tr id="resultHead"></tr> -->
+      <tr>
+        <th>参与人</th>
+        <th>平均应出金额<br><button onclick="calcAverageResult()">结算</button></th>
+        <th>对方已出金额</th>
+        <th>最终应出金额<br><button onclick="calcIncomeResult()">结算</button></th>
+      </tr>
+    </thead>
+    <tbody id="resultBody"></tbody>
+  </table>
+  <button onclick="onExport()">导出表格</button>
+  <script>
+    let index = 0
+    const accountBodyElement = document.getElementById('accountBody')
+    const resultBodyElement = document.getElementById('resultBody')
+    const account = []
+    const peopleList = [
+      { value: 0, label: 0, payment: 0, others: null, income: 0 },
+      { value: 1, label: 1, payment: 0, others: null, income: 0 },
+      { value: 2, label: 2, payment: 0, others: null, income: 0 },
+      { value: 3, label: 3, payment: 0, others: null, income: 0 },
+      // { value: 4, label: 4, payment: 0, income: 0 },
+      // { value: 5, label: 5, payment: 0, income: 0 }
+    ]
+    addRow()
+    addResultTable()
+
+    function addRow() {
+      const element = document.createElement('tr')
+      const attribute = document.createAttribute('id')
+      attribute.value = `tr${index}`
+      element.setAttributeNode(attribute)
+
+      let str = ''
+      for (let i = 0; i < peopleList.length; i++) {
+        str += `<input type="checkbox" onchange="checkPeople(${peopleList[i].value}, index - 1)">${peopleList[i].label}<br>`
+      }
+      element.innerHTML = `
+        <td>${str}</td>
+        <td><textarea id="money${index}" rows="10" placeholder="金额"></textarea></td>
+        <td>
+          <button onclick="accountMoney(${index})">结算</button>
+          <div id="result${index++}"></div>
+        </td>
+      `
+      accountBodyElement.appendChild(element)
+
+      addRowAccount()
+    }
+
+    function deleteRow() {
+      if (index === 1) return
+      accountBodyElement.removeChild(document.getElementById(`tr${--index}`))
+      account.splice(account.length - 1, index)
+    }
+
+    function addRowAccount() {
+      account.push({
+        people: [],
+        money: '',
+        sum: 0,
+        average: 0
+      })
+    }
+
+    function addResultTable() {
+      let str = ''
+      for (let i = 0; i < peopleList.length; i++) {
+        str += `<tr>
+          <td>${peopleList[i].label}</td>
+          <td id="payment${i}"></td>
+          <td><input id="others${i}" placeholder="输入金额"></td>
+          <td id="income${i}"></td>
+        </tr>`
+      }
+      resultBodyElement.innerHTML = str
+    }
+
+    function checkPeople(idx, index) {
+      const e = window.event || arguments.callee.caller.arguments[0]
+      if (e.target.checked) {
+        !account[index].people.includes(idx) && account[index].people.push(idx)
+      } else {
+        account[index].people = account[index].people.filter(item => item !== idx)
+      }
+    }
+
+    function accountMoney(index) {
+      const money = document.getElementById(`money${index}`).value
+      account[index].money = money
+
+      const result = document.getElementById(`result${index}`)
+      account[index].sum = money.split('+').reduce((preVal, item) => preVal + parseInt(item), 0) || 0
+      account[index].average = parseFloat((account[index].sum / account[index].people.length).toFixed(2)) || 0
+
+      result.innerHTML =
+      ` <br><br>
+        总金额<br>
+        ${account[index].sum}<br><br>
+        平均金额<br>
+        ${account[index].average}
+      `
+      // calcAverageResult()
+      console.log(account)
+    }
+    
+    function calcAverageResult() {
+      peopleList.forEach((item, index) => {
+        let payment = 0
+        account.forEach(i => {
+          if (i.people.includes(item.value)) {
+            payment += i.average
+          }
+        })
+        item.payment = payment
+        document.getElementById(`payment${index}`).innerHTML = item.payment
+      })
+      console.log(peopleList);
+    }
+
+    function calcIncomeResult() {
+      peopleList.forEach((item, index) => {
+        item.others = document.getElementById(`others${index}`).value
+        item.income = item.payment - item.others
+        document.getElementById(`income${index}`).innerHTML = item.income
+      })
+      // console.log(account, peopleList);
+    }
+
+    function onExport() {
+      let str = ''
+      str += '参与人,金额列表,总金额,平均金额\n'
+      account.forEach(obj => {
+        let peopleName = []
+        peopleList.forEach(person => {
+          if (obj.people.includes(person.value)) {
+            peopleName.push(person.label)
+          }
+        })
+        str += `${peopleName.join('，') || '无' },${obj.money || '无'},${obj.sum},${obj.average}\n`
+      })
+
+      str += '\n\n\n参与人,平均应出金额,对方已出金额,最终应出金额\n'
+      peopleList.forEach(person => {
+        str += `${person.label},${person.payment},${person.others},${person.income}\n`
+      })
+
+      // encodeURIComponent解决中文乱码
+      const uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+      // 通过创建a标签实现
+      const link = document.createElement("a");
+      link.href = uri;
+      // 对下载的文件命名
+      link.download =  `${getDate()}账单.csv`;
+      link.click();
+    }
+
+    function getDate() {
+      const date = new Date()
+      const year = date.getFullYear()
+      const month = date.getMonth() + 1
+      const day = date.getDate()
+      return year + '年' + month + '月' + day + '日'
+    }
+  </script>
+</body>
+</html>

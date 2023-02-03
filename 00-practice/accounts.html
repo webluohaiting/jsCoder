@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>账目表</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- <script src="https://cdn.bootcdn.net/ajax/libs/eruda/2.3.3/eruda.min.js"></script>
+  <script>eruda.init()</script> -->
+  <style>
+    @media screen and (max-width: 1000px) {
+      #app {
+        width: 100%;
+      }
+      textarea {
+        font-size: 14px;
+      }
+    }
+    @media screen and (min-width: 1000px) {
+      #app {
+        width: 50%;
+        margin: 0 auto;
+      }
+      textarea {
+        font-size: 16px;
+      }
+    }
+    
+    table {
+      width: 100%;
+      color: #999;
+    }
+    table, th, td {
+      padding: 2px;
+      text-align: center;
+      border: 1px solid #ccc;
+      border: 1px solid rgb(205, 204, 245);
+    }
+    th {
+      padding: 8px 0;
+      font-size: 12px;
+      color: #fff;
+      background: skyblue;
+      /* background: rgb(188, 197, 223);
+      background: rgb(197, 190, 230);
+      background: rgb(205, 204, 245); */
+    }
+    input, textarea {
+      color: #666;
+      border: none;
+      outline: none;
+    }
+    textarea {
+      width: 100%;
+    }
+
+    .accountTable tr td:nth-child(1),
+    .accountTable tr td:nth-child(3) {
+      width: 16%;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .accountTable tr td:nth-child(2) {
+      width: 68%; 
+    }
+
+    .resultTable tr {
+      height: 40px;
+      line-height: 30px;
+    }
+
+    .resultTable tr td:nth-child(1) {
+      font-size: 13px;
+    }
+
+    .resultTable tr td:nth-child(3) {
+      width: 30%;
+    }
+    .resultTable input {
+      width: 100%;
+      text-align: center;
+    }
+    .tips {
+      line-height: 15px;
+      font-size: 10px;
+      color: rgb(243, 134, 134);
+    }
+    button {
+      float: right;
+      margin: 10px 10px 20px 0;
+      padding: 8px 15px;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      background: rgb(62, 181, 228);
+      /* background: rgb(179, 169, 223);
+      background: rgb(161, 158, 245); */
+      /* background: rgb(10, 165, 226); */
+      box-shadow: 2px 2px 2px #aaa;
+      outline: none;
+    }
+    button:active {
+      background: rgb(62, 181, 228);
+      /* background: rgb(89, 128, 235);
+      background: rgb(136, 132, 241); */
+      box-shadow: 2px 2px 2px #ccc;
+    }
+
+    .mask-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 2;
+      background: rgb(73, 73, 73, .8);
+    }
+    .canvas-box {
+      width: 350px;
+      height: 90%;
+      background: #fff;
+    }
+    canvas {
+      display: none;
+      background: #fff;
+    }
+    .canvas-box img {
+      width: 100%;
+      max-height: calc(100% - 60px);
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <button @click="onSave">暂存数据</button>
+    <button @click="onImport">导入旧数据</button>
+    <table class="accountTable">
+      <thead>
+        <tr>
+          <th>参与人</th>
+          <th>金额清单</th>
+          <th>金额结算</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(item, index) in accountList" :key="item.id">
+          <td>
+            <div v-for="i in peopleList" :key="i.value">
+              <input v-model="item.people" type="checkbox" :value="i.value" @change="onChange(index)">{{ i.label }}<br>
+            </div>
+          </td>
+          <td><textarea v-model="item.money" rows="10" placeholder="请输入金额,以+连接"></textarea></td>
+          <td>
+            <div>总金额</div>
+            <div>{{ item.sum }}</div><br>
+            <div>平均<br>金额</div>
+            <div>{{ item.average }}</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button @click="addRow">添加行</button>
+    <button @click="deleteRow">删除行</button>
+    <br><br>
+    <table class="resultTable">
+      <thead>
+        <tr>
+          <th>参与人</th>
+          <th>平均应出金额</th>
+          <th>对方已出金额</th>
+          <th>最终应出金额</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in peopleList" :key="item.value">
+          <td>{{ item.label }}</td>
+          <td>{{ item.averagePayment }}</td>
+          <td><input v-model="item.othersPayment" placeholder="请输入金额"></td>
+          <td>{{ item.finalPayment }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="tips">
+      *最终应出金额，负数为需要归还对方金额，正数为对方需要归还金额<br>
+      *个人账单中，“对方已出金额”填写需归还对方的平均应出金额<br>
+      *混合账单中，“对方已出金额”填写对方已出的总金额
+    </div>
+    <button @click="createImage">生成图片</button>
+    <button @click="onExport">导出最终表格</button>
+
+    <div v-if="showDialog" class="mask-box">
+      <div class="canvas-box">
+        <canvas
+          ref="canvas"
+          :width="canvasWidth * 2"
+          :height="canvasHeight * 2"
+          :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px'}">
+        </canvas>
+        <img :src="src">
+        <button @click="showDialog = false">关闭</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const { createApp } = Vue
+    
+    createApp({
+      data() {
+        return {
+          showDialog: false,
+          accountList: [
+            { id: 0, people: [], money: '', sum: 0, average: 0, unwatch: null }
+            // { id: 0, people: [0, 1, 2, 3], money: '1+2+3', sum: 0, average: 0, unwatch: null },
+            // { id: 1, people: [0, 1, 2, 3], money: '1+2+3', sum: 0, average: 0, unwatch: null }
+          ],
+          peopleList: [
+            { value: 0, label: '老大', averagePayment: 0, othersPayment: null, finalPayment: 0, unwatch: null },
+            { value: 1, label: '老二', averagePayment: 0, othersPayment: null, finalPayment: 0, unwatch: null },
+            { value: 2, label: '老三', averagePayment: 0, othersPayment: null, finalPayment: 0, unwatch: null },
+            { value: 3, label: '老四', averagePayment: 0, othersPayment: null, finalPayment: 0, unwatch: null },
+            // { value: 4, label: 4, averagePayment: 0, othersPayment: null, finalPayment: 0 },
+            // { value: 5, label: 5, averagePayment: 0, othersPayment: null, finalPayment: 0 }
+          ],
+          src: '',
+          canvasWidth: null,
+          canvasHeight: null,
+          isPhone: false
+        }
+      },
+      mounted() {
+        this.getCanvasParams()
+        this.watchMoney(() => this.accountList[0].money, 0)
+        this.peopleList.forEach((person, index) => {
+          this.watchOthers(() => this.peopleList[index].othersPayment, index)
+        })
+        // this.createImage()
+      },
+      methods: {
+        getCanvasParams() {
+          // this.canvasWidth = (isPhone ? window.innerWidth : window.innerWidth / 2) - 40
+          this.canvasWidth = 350 - 40
+          this.canvasHeight = window.innerHeight - 120
+        },
+
+        addRow() {
+          const index = this.accountList.length
+          this.accountList.push({
+            id: index,
+            people: [],
+            money: '',
+            sum: 0,
+            average: 0
+          })
+          this.watchMoney(() => this.accountList[index].money, index)
+        },
+
+        deleteRow() {
+          const length = this.accountList.length
+          if (length === 1) return
+          this.accountList[length - 1].unwatch()
+          this.accountList.splice(length - 1, 1)
+          this.calcSingleMoney()
+        },
+
+        onChange(index) {
+          this.calcTotalMoney(index)
+          this.calcSingleMoney()
+        },
+
+        watchMoney(listener, index) {
+          this.accountList[index].unwatch = this.$watch(listener, newVal => {
+            this.calcTotalMoney(index)
+            this.calcSingleMoney()
+          })
+        },
+
+        watchOthers(listener, index) {
+          this.peopleList[index].unwatch = this.$watch(listener, newVal => {
+            let { averagePayment, othersPayment } = this.peopleList[index]
+            this.peopleList[index].finalPayment = this.toFixedTwo(averagePayment - othersPayment)
+          })
+        },
+
+        // 计算清单数据
+        calcTotalMoney(index) {
+          const peopleLength = this.accountList[index].people.length
+          const moneyList = this.accountList[index].money.split('+')
+          const sum = moneyList.reduce((preVal, item) => preVal + parseFloat(item), 0) || 0
+          
+          this.accountList[index].sum = this.toFixedTwo(sum)
+          this.accountList[index].average = this.toFixedTwo(sum / peopleLength) || 0
+        },
+
+        // 计算个人金额数据
+        calcSingleMoney() {
+          this.peopleList.forEach(person => {
+            let averagePayment = 0
+            this.accountList.forEach(obj => {
+              if (obj.people.includes(person.value)) {
+                averagePayment += obj.average
+              }
+            })
+            person.averagePayment = this.toFixedTwo(averagePayment)
+            person.finalPayment = this.toFixedTwo(person.averagePayment - person.othersPayment)
+          })
+        },
+
+        // 生成图片
+        createImage() {
+          this.showDialog = true
+          this.$nextTick(() => {
+            this.drawImage()
+          })
+        },
+
+        // 画图
+        drawImage() {
+          const canvas = this.$refs.canvas
+          
+          const ctx = canvas.getContext('2d')
+          ctx.scale(2, 2)
+          ctx.fillStyle = '#fff'
+          ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+          this.drawFinalTable(ctx)
+          this.drawAccountTable(ctx)
+
+          this.src = this.$refs.canvas.toDataURL("image/png")
+        },
+
+        // 画结算表格
+        drawFinalTable(ctx) {
+          const canvas = this.$refs.canvas
+          const columnLength = 4
+          const startX = 20
+          const startY = 20
+          const width = Math.floor((canvas.width / 2 - 20 * 2) / columnLength)
+          const height = 20
+
+          const printArr = [
+            { label: '参与人', averagePayment: '平均应出金额', othersPayment: '对方已出金额', finalPayment: '最终应出金额'},
+            ...this.peopleList
+          ]
+          printArr.forEach((person, idx) => {
+            const content = [person.label, person.averagePayment, person.othersPayment || 0, person.finalPayment]
+            for (let i = 0; i < 4; i++) {
+              this.drawTd(ctx, {
+                x: startX + width * i,
+                y: startY + height * idx,
+                width,
+                height,
+                text: content[i],
+                textX: (startX + width * i) + width / 2,
+                textY: (startY + height * idx) + height / 2,
+                textAlign: 'center',
+                textBaseline: 'middle',
+                font: idx === 0 ? '10px Arial bold' : '8px Arial'
+              })
+            }
+          })
+        },
+
+        // 画清单表格
+        drawAccountTable(ctx) {
+          const canvas = this.$refs.canvas
+          const columnLength = 4
+          const startX = 20
+          const startY = 140
+          const width = Math.floor((canvas.width / 2 - 20 * 2) / columnLength)
+          const titleHeight = 20
+          const contentHeight = 95
+          const title = ['参与人', '金额清单', '金额结算']
+          for (let i = 0; i < 3; i++) {
+            const x = i > 1 ? startX + width * (i + 1) : startX + width * i
+            const rectWidth = i === 1 ? width * 2 : width
+            this.drawTd(ctx, {
+              x,
+              y: startY,
+              width: rectWidth,
+              height: titleHeight,
+              text: title[i],
+              textX: x + rectWidth / 2,
+              textY: startY + titleHeight / 2,
+              textAlign: 'center',
+              textBaseline: 'middle',
+              font: `10px Arial bold`
+            })
+          }
+          this.accountList.forEach((item, idx) => {
+            for (let i = 0; i < 3; i++) {
+              // 第二列占两格
+              const x = i > 1 ? startX + width * (i + 1) : startX + width * i
+              const rectWidth = i === 1 ? width * 2 : width
+              this.drawRect(ctx, {
+                x,
+                y: startY + titleHeight + contentHeight * idx,
+                width: rectWidth,
+                height: contentHeight
+              })
+              if (i === 0) {
+                const people = this.peopleList.filter(person => item.people.includes(person.value)).map(item => item.label)
+                this.cutTd(
+                  ctx,
+                  people,
+                  contentHeight,
+                  x + rectWidth / 2,
+                  startY + titleHeight + contentHeight * idx,
+                  15,
+                  4
+                )
+              } else if (i === 1) {
+                this.cutMoney(
+                  ctx,
+                  item.money,
+                  rectWidth,
+                  x,
+                  startY + titleHeight + contentHeight * idx,
+                  8,
+                  5
+                )
+              } else if (i === 2) {
+                this.cutTd(
+                  ctx,
+                  ['总金额', item.sum, '平均金额', item.average],
+                  contentHeight,
+                  x + rectWidth / 2,
+                  startY + titleHeight + contentHeight * idx,
+                  15,
+                  4
+                )
+              }
+            }
+          })
+        },
+
+        // 切割清单
+        cutMoney(ctx, str, width, textX, textY, lineHeight, padding) {
+          let textWidth = 0
+          let lastSubStrIndex = 0
+          let line = 0
+          width -= (padding * 2)
+          textX += padding
+          textY += padding
+          for (let i = 0; i < str.length; i++) {
+            if (line > 10) return // 最多10行
+            ctx.font = '6px Arial'
+            textWidth += ctx.measureText(str[i]).width
+            if (textWidth > width) {
+              this.drawText(ctx, {
+                text: str.substring(lastSubStrIndex, i),
+                textX,
+                textY,
+                textAlign: 'start',
+                textBaseline: 'top',
+                font: '6px Arial'
+              })
+              textY += lineHeight
+              textWidth = 0
+              lastSubStrIndex = i
+              line += 1
+            }
+            if (i === str.length - 1) {
+              this.drawText(ctx, {
+                text: str.substring(lastSubStrIndex, i+1),
+                textX,
+                textY,
+                textAlign: 'start',
+                textBaseline: 'top',
+                font: '6px Arial'
+              })
+            }
+          }
+        },
+
+        // 单元格划分
+        cutTd(ctx, textArr, height, textX, startY, padding, rowLength) {
+          startY += padding // 矩形内高去掉上下15
+          height = (height - padding * 2) / rowLength // 矩形内高去掉上下15，平分4格
+          for (let i = 0; i < rowLength; i++) {
+            this.drawText(ctx, {
+              text: textArr[i] === undefined ? '' : textArr[i],
+              textX,
+              textY: startY + height * i  + height / 2,
+              textAlign: 'center',
+              textBaseline: 'middle'
+            })
+          }
+        },
+
+        // 画单元格
+        drawTd(ctx, obj) {
+          this.drawRect(ctx, obj)
+          this.drawText(ctx, obj)
+        },
+
+        // 画矩形
+        drawRect(ctx, obj) {
+          const { x, y, width, height } = obj
+          ctx.strokeRect(x, y, width, height)
+        },
+
+        // 画文本
+        drawText(ctx, obj) {
+          const { text, textX, textY, textAlign, textBaseline, font, color } = obj
+          ctx.font = font || '8px Arial'
+          ctx.fillStyle = color || '#000'
+          ctx.textAlign = textAlign || 'start'
+          ctx.textBaseline = textBaseline || 'top' 
+          ctx.fillText(text, textX, textY)
+        },
+
+        // 导出为表格
+        onExport() {
+          let str = ''
+          str += '参与人,金额列表,总金额,平均金额\n'
+          this.accountList.forEach(obj => {
+            let peopleName = []
+            this.peopleList.forEach(person => {
+              if (obj.people.includes(person.value)) {
+                peopleName.push(person.label)
+              }
+            })
+            str += `${peopleName.join('，') || '无' },${obj.money || '无'},${obj.sum || 0},${obj.average || 0}\n`
+          })
+
+          str += '\n\n\n参与人,平均应出金额,对方已出金额,最终应出金额\n'
+          this.peopleList.forEach(person => {
+            str += `${person.label || 0},${person.averagePayment || 0},${person.othersPayment || 0},${person.finalPayment || 0}\n`
+          })
+
+          // encodeURIComponent解决中文乱码
+          const uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+          // 通过创建a标签实现
+          const link = document.createElement("a");
+          link.href = uri;
+          // 对下载的文件命名
+          link.download =  `${this.getDate()}账单.csv`;
+          link.click();
+        },
+
+        // 暂存数据
+        onSave() {
+          localStorage.setItem('accountList', '')
+          localStorage.setItem('peopleList', '')
+          localStorage.setItem('accountList', JSON.stringify(this.accountList))
+          localStorage.setItem('peopleList', JSON.stringify(this.peopleList))
+        },
+
+        // 导入缓存数据
+        onImport() {
+          const accountList = JSON.parse(localStorage.getItem('accountList'))
+          const peopleList = JSON.parse(localStorage.getItem('peopleList'))
+          if (!accountList || !peopleList) return
+          this.accountList.forEach(item => item.unwatch())
+          this.peopleList.forEach(item => item.unwatch())
+          this.accountList = accountList
+          this.peopleList = peopleList
+          this.accountList.forEach((item, index) => {
+            this.watchMoney(() => this.accountList[index].money, index)
+          })
+          this.peopleList.forEach((item, index) => {
+            this.watchOthers(() => this.peopleList[index].othersPayment, index)
+          })
+        },
+
+        toFixedTwo(num) {
+          return parseFloat(num.toFixed(2))
+        },
+
+        getDate() {
+          const date = new Date()
+          const year = date.getFullYear()
+          const month = date.getMonth() + 1
+          const day = date.getDate()
+          return year + '年' + month + '月' + day + '日'
+        }
+      }
+    }).mount('#app')
+  </script>
+</body>
+</html>

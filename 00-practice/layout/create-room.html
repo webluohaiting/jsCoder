@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- <script src="./vue.global.js"></script> -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    body {
+      font-family: '宋体';
+      color: rgb(46, 6, 133);
+      color: rgb(43, 68, 78);
+    }
+    #wrap {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .content {
+      position: relative;
+      margin-right: 20px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      /* background: #f0ecf8; */
+    }
+    .box {
+      position: absolute;
+      border: 1px solid #ccc;
+      background: #039dda;
+    }
+    button {
+      padding: 8px 15px;
+      margin-right: 20px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      background: rgb(183, 181, 243);
+      background: skyblue;
+      box-shadow: 2px 2px 2px #aaa;
+      outline: none;
+    }
+    button:active {
+      background:rgb(144, 140, 247);
+      background: rgb(113, 204, 240);
+      /* box-shadow: 2px 2px 2px #ccc; */
+    }
+    input {
+      width: 50px;
+      margin-right: 20px;
+      border-radius: 5px;
+      border-color:rgb(183, 181, 243);
+      border-color: rgb(161, 207, 250);
+    }
+    input:focus {
+      outline: none;
+      border-color:rgb(84, 78, 240);
+      border-color:rgb(6, 131, 248);
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <button @click="addRoom">新增房间</button>
+    <button @click="addChild">新增物品</button>
+    <button @click="deleteRoom">删除房间</button>
+    <button @click="deleteChild">删除物品</button><br>
+    <div>
+      选中房间
+      <span v-for="item in showList">
+        {{item.label}}：<input v-model="currentSize[item.value]" :type="item.type || 'text'" @blur="onContentBlur($event, item.value)">
+      </span>
+    </div>
+    <div>
+      选中物品
+      <span v-for="item in showChildList">
+        {{item.label}}：<input v-model="currentChildSize[item.value]" :type="item.type || 'text'" @blur="onChildBlur($event, item.value)">
+      </span>
+    </div>
+    <br>
+    <div id="wrap" ref="wrap">
+      <!-- #8b69e9 -->
+      <div
+        v-for="(item, index) in roomList"
+        :key="item.id"
+        class="content"
+        :style="{ width: item.width + 'px', height: item.height + 'px', borderColor: currentIndex === index ? '#039dda' : '#ccc' }"
+        @click.stop="handleClick(index)"
+      >
+        <!-- #db47db -->
+        <div
+          v-for="(i, idx) in item.children"
+          class="box"
+          :style="{
+            width: i.width + 'px',
+            height: i.height + 'px',
+            top: calcPosition(i.top),
+            bottom: calcPosition(i.bottom),
+            left: calcPosition(i.left),
+            right: calcPosition(i.right),
+            background: i.background,
+            borderRadius: i.borderRadius + 'px',
+            borderColor: currentIndex === index && currentChildIndex === idx ? '#039dda' : ''
+          }"
+          @click.stop="handleClick(index, idx)"
+        >
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const { createApp } = Vue
+
+    const app = createApp({
+      data() {
+        return {
+          count: 0,
+          countChild: 0,
+          roomList: [], // roomList: [{ id: 0, ...currentSize, children: [] }]
+          currentIndex: null,
+          currentChildIndex: null,
+          currentSize: {
+            width: '',
+            height: ''
+          },
+          currentChildSize: {
+            width: '',
+            height: '',
+            top: '',
+            bottom: '',
+            left: '',
+            right: '',
+            background: '#b0dcee',
+            // background: '#C8C8F0',
+            // borderColor: '#dddddd',
+            borderRadius: ''
+          },
+          showList: [
+            { value: 'width', label: '长' },
+            { value: 'height', label: '宽' }
+          ],
+          showChildList: [
+            { value: 'width', label: '长' },
+            { value: 'height', label: '宽' },
+            { value: 'top', label: '上' },
+            { value: 'bottom', label: '下' },
+            { value: 'left', label: '左' },
+            { value: 'right', label: '右' },
+            { value: 'borderRadius', label: '圆角' },
+            { value: 'background', label: '背景色', type: 'color' }
+          ]
+        }
+      },
+      computed: {
+        calcPosition() {
+          return function(val) {
+            return val === '' ? 'auto' : (val + 'px')
+          }
+        }
+      },
+      methods: {
+        addRoom() {
+          this.roomList.push({
+            id: this.count++,
+            width: 300,
+            height: 300,
+            children: []
+          })
+          this.handleClick(this.roomList.length - 1)
+        },
+        addChild() {
+          if (!this.roomList.length) return
+          this.roomList[this.currentIndex].children.push({
+            id: this.countChild++,
+            parentIndex: this.currentIndex,
+            width: 50,
+            height: 50,
+            top: '',
+            bottom: '',
+            left: '',
+            right: '',
+            // background: '#C8C8F0',
+            // background: '#b0dcee',
+            background: '#dddddd',
+            // borderColor: '',
+            borderRadius: ''
+          })
+          this.handleClick(this.currentIndex, this.roomList[this.currentIndex].children.length - 1)
+        },
+        handleClick(index, idx) {
+          this.currentIndex = index
+          idx !== undefined && (this.currentChildIndex = idx)
+          
+          if (this.roomList.length > 0) {
+            Object.keys(this.currentSize).forEach(key => {
+              this.currentSize[key] = this.roomList[this.currentIndex][key]
+            })
+          } else {
+            Object.keys(this.currentSize).forEach(key => {
+              this.currentSize[key] = ''
+            })
+          }
+          if (this.roomList.length && this.roomList[this.currentIndex].children.length > 0) {
+            Object.keys(this.currentChildSize).forEach(key => {
+              this.currentChildSize[key] = this.roomList[this.currentIndex].children[this.currentChildIndex][key]
+            })
+          } else {
+            Object.keys(this.currentChildSize).forEach(key => {
+              this.currentChildSize[key] = ''
+            })
+          }
+        },
+        onContentBlur(e, key) {
+          if (!this.roomList.length) return
+          this.roomList[this.currentIndex][key] = e.target.value
+        },
+        onChildBlur(e, key) {
+          if (!this.roomList.length || !this.roomList[this.currentIndex].children.length) return
+          this.roomList[this.currentIndex].children[this.currentChildIndex][key] = e.target.value
+        },
+        deleteRoom() {
+          this.roomList.splice(this.currentIndex, 1)
+          this.handleClick(0, 0)
+        },
+        deleteChild() {
+          if (!this.roomList.length) return
+          this.roomList[this.currentIndex].children.splice(this.currentChildIndex, 1)
+          this.handleClick(this.currentIndex, 0)
+        }
+      }
+    })
+    app.mount('#app')
+  </script>
+</body>
+</html>
